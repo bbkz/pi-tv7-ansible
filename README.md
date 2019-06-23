@@ -56,7 +56,7 @@ ansible-playbook -i production site.yml
 
 ### kodi
 
-kodi is used as the player and user interface and will be pre-configured to use the tvheadend pvr addon providing the channel list and the epg (electronic program guide).
+kodi is used as the player and user interface and will be pre-configured to use the tvheadend pvr addon, which is providing the channel list and the epg (electronic program guide).
 
 * It installs kodi and the pvr addon.
 * It adds a service to autostart kodi as a standalone app.
@@ -64,9 +64,9 @@ kodi is used as the player and user interface and will be pre-configured to use 
 
 ### tvheadend
 
-tvheadend will make the connection to the init7 stream and provide it in your network, packed with epg (program data) and channel logo, as a stream which will work over wi-fi as well.
+tvheadend will make the connection to the init7 stream and provide it in your network as a stream which will work over wi-fi as well, packed with epg (program data) and channel logo.
 
-In this case here we we just install and configure it alongside of kodi.
+In this case here we just install and configure it alongside of kodi.
 
 The webinterface runs on http://your_pi:9981, the username and password is "admin".
 
@@ -74,7 +74,7 @@ The webinterface runs on http://your_pi:9981, the username and password is "admi
 
 #### prepare_channels.py
 
-This script is getting the latest tv7 playlist and downloads the logos. We need to prepare our own playlist because tvheadend requires a channel number to be automatically setup.
+This script is getting the latest tv7 playlist and downloads the logos. We need to prepare our own playlist because for tvheadend to be setup automatically it requires a channel number to be set in the playlist.
 
 #### getepg.sh
 
