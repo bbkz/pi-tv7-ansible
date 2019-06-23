@@ -12,12 +12,12 @@ This ansible playbook is ment to setup a raspberry >pi2 for tv7 (init7). The ide
 ## Installation
 
 1. Get a PI and a network cable
-- Download the "Raspbian Stretch Lite" image and install it according to:
-    - https://www.raspberrypi.org/downloads/raspbian/
-- Install ansible on your admin computer
-- Download this ansible playbook
-- Give ssh access to the pi from your admin computer
-- Play it
+1. Download the "Raspbian Stretch Lite" image and install it according to:
+    * https://www.raspberrypi.org/downloads/raspbian/
+1. Install ansible on your admin computer
+1. Download this ansible playbook
+1. Give ssh access to the pi from your admin computer
+1. Play it
 
 ### Configure ansible playbook
 
