@@ -1,0 +1,109 @@
+- name: install tvheadend and tools
+  apt:
+    name: '{{item}}'
+  loop:
+    - tvheadend
+    - python3-lxml
+    - python3-configobj
+    - socat
+
+- file:
+    path: '{{item}}'
+    state: directory
+    owner: hts
+    group: video
+    mode: 0700
+  loop:
+    - /var/lib/hts/channels
+
+- name: add channel script
+  copy:
+    src: prepare_channels.py
+    dest: /var/lib/hts/channels/prepare_channels.py
+    owner: hts
+    group: video
+    mode: 0700
+
+- name: add channel config
+  copy:
+    src: prepare_channels.conf
+    dest: /var/lib/hts/channels/prepare_channels.conf
+    owner: hts
+    group: video
+    mode: 0600
+
+- name: create channel playlist
+  command: /var/lib/hts/channels/prepare_channels.py
+  args:
+    chdir: /var/lib/hts/channels
+    creates: /var/lib/hts/channels/data/tv7playlist.m3u
+
+- name: add superuser for tvheadend
+  copy:
+    src: superuser
+    dest: /var/lib/hts/.hts/tvheadend/superuser
+    owner: hts
+    group: hts
+    mode: 0600
+  notify: restart_tvheadend
+
+- name: disable startup wizard for tvheadend
+  lineinfile:
+    path: /var/lib/hts/.hts/tvheadend/config
+    regexp: '(?:(?<=\s)|^)\"wizard\"'
+    state: absent
+  notify: restart_tvheadend
+
+- file:
+    path: '{{item}}'
+    state: directory
+    owner: hts
+    group: video
+    mode: 0700
+  loop:
+    - /var/lib/hts/.hts/tvheadend/input
+    - /var/lib/hts/.hts/tvheadend/input/iptv
+    - /var/lib/hts/.hts/tvheadend/input/iptv/networks
+    - /var/lib/hts/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a
+
+- name: add tv7 input config for tvheadend
+  copy:
+    src: input-config-tv7
+    dest: /var/lib/hts/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a/config
+    owner: hts
+    group: video
+    mode: 0600
+  notify: restart_tvheadend
+
+- name: enable and start tvheadend service(s)
+  systemd:
+    enabled: yes
+    state: started
+    name: '{{item}}'
+  loop:
+    - tvheadend
+
+- name: enable the bouquet created by tvheadend
+  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 3cfd08f7ff52f92ea3f2f3e63c30e74a /var/lib/hts/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch bouquet-enabled.done
+  args:
+    chdir: /var/lib/hts/channels
+    creates: bouquet-enabled.done
+  notify: restart_tvheadend
+
+
+- name: add epg grab config
+  copy:
+    src: epggrab-config
+    dest: /var/lib/hts/.hts/tvheadend/epggrab/config
+    owner: hts
+    group: video
+    mode: 0600
+  notify: restart_tvheadend
+
+- name: add epg script
+  copy:
+    src: getepg.sh
+    dest: /var/lib/hts/channels/getepg.sh
+    owner: hts
+    group: video
+    mode: 0700

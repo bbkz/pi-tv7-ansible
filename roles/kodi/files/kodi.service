@@ -1,0 +1,18 @@
+[Unit]
+Description = Kodi Media Center
+After = remote-fs.target network-online.target
+Wants = network-online.target
+
+[Service]
+User = pi
+Group = pi
+Type = simple
+ExecStart = /usr/bin/kodi-standalone
+Restart = on-failure
+TTYPath=/dev/tty2
+StandardInput=tty
+StandardOutput=journal
+ExecStartPre=/bin/chvt 2
+
+[Install]
+WantedBy=multi-user.target

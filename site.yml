@@ -1,0 +1,14 @@
+# Apply common configuration to all hosts
+- hosts: all
+  roles:
+  - common
+
+# Apply kodi configuration for raspbian hosts
+- hosts: kodis
+  roles:
+  - kodi
+
+# Add tvheadend configuration for raspbian hosts
+- hosts: tvheadends
+  roles:
+  - tvheadend

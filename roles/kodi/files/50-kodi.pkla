@@ -1,0 +1,6 @@
+[Actions for pi user]
+Identity=unix-user:pi
+Action=Action=org.freedesktop.upower.*;org.freedesktop.consolekit.system.*;org.freedesktop.udisks.*;org.freedesktop.login1.*
+ResultActive=yes
+ResultAny=yes
+ResultInactive=no

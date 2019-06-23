@@ -1,0 +1,5 @@
+[kodis]
+your_pi ansible_user=pi ansible_become=true
+
+[tvheadends]
+your_pi ansible_user=pi ansible_become=true

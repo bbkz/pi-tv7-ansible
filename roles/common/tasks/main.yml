@@ -1,0 +1,11 @@
+- name: Install basic packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - screen
+      - htop
+      - iftop
+      - lsof
+      - lshw
+      - apt-file

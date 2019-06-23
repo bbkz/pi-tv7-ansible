@@ -1,0 +1,12 @@
+{
+        "modules": {
+                "xmltv": {
+                        "class": "epggrab_mod_ext_xmltv",
+                        "dn_chnum": false,
+                        "name": "XMLTV",
+                        "type": "External",
+                        "enabled": true,
+                        "priority": 3
+                }
+        }
+}

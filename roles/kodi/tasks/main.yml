@@ -1,0 +1,87 @@
+- name: install kodi and tools
+  apt:
+    name: '{{item}}'
+  loop:
+    - kodi
+    - kodi-pvr-hts
+    - kodi-visualization-shadertoy
+    - kodi-visualization-spectrum
+    - kodi-visualization-goom
+    - kodi-visualization-waveform
+    - bluealsa
+    - python-lxml
+    - python-pysqlite2
+
+- file:
+    path: '{{item}}'
+    state: directory
+    owner: pi
+    group: pi
+    mode: 0755
+  loop:
+    - /home/pi/.kodi
+    - /home/pi/.kodi/userdata
+    - /home/pi/.kodi/userdata/addon_data
+    - /home/pi/.kodi/userdata/addon_data/skin.estuary
+    - /home/pi/.kodi/userdata/addon_data/pvr.hts
+
+- name: add advanced settings for kodi
+  copy: src=advancedsettings.xml dest=/home/pi/.kodi/userdata/advancedsettings.xml
+
+- name: add repository sources for kodi
+  copy: src=sources.xml dest=/home/pi/.kodi/userdata/sources.xml
+
+- name: add estuary skin settings for kodi
+  copy: src=skin.estuary-settings.xml dest=/home/pi/.kodi/userdata/addon_data/skin.estuary/settings.xml
+
+- name: add tvheadend settings for kodi
+  copy: src=pvr.hts-settings.xml dest=/home/pi/.kodi/userdata/addon_data/pvr.hts/settings.xml
+
+- file:
+    path: '{{item}}'
+    owner: pi
+    group: pi
+    mode: 0644
+  loop:
+    - /home/pi/.kodi/userdata/advancedsettings.xml
+    - /home/pi/.kodi/userdata/sources.xml
+    - /home/pi/.kodi/userdata/addon_data/skin.estuary/settings.xml
+
+- name: allow pi to reboot
+  copy: src=50-kodi.pkla dest=/var/lib/polkit-1/localauthority/50-local.d/50-kodi.pkla
+
+- name: add kodi service
+  copy: src=kodi.service dest=/etc/systemd/system/kodi.service
+
+- name: reload systemd configs
+  systemd:
+    daemon_reload: yes
+
+- name: enable and start kodi services
+  systemd:
+    enabled: yes
+    state: started
+    name: '{{item}}'
+  loop:
+    - kodi
+    - bluealsa
+
+- name: enable kodi tvheadend addon
+  shell: \{ echo '\{"jsonrpc"{{':'}} "2.0", "method"{{':'}} "Addons.SetAddonEnabled", "params"{{':'}} {"addonid"{{':'}} "pvr.hts", "enabled"{{':'}} true}, "id"{{':'}} 1\}'; sleep 1; \} | telnet 127.0.0.1 9090; touch tvheadend-enabled.done
+  args:
+    chdir: /home/pi
+    creates: tvheadend-enabled.done
+
+- name: disable getty screensaver
+  lineinfile:
+    path: /boot/cmdline.txt
+    backrefs: True
+    regexp: '(^.+rootwait(\s+(?!consoleblank=0 vt.global_cursor_default=0)[\w=/\-\.]+)*)\s*$'
+    line: '\1 consoleblank=0 vt.global_cursor_default=0'
+    state: present
+
+- name: increase gpu ram
+  lineinfile:
+    path: /boot/config.txt
+    line: 'gpu_mem_1024=448'
+    state: present

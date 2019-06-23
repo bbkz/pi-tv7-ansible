@@ -1,0 +1,23 @@
+<settings version="2">
+    <setting id="autorec_approxtime" default="true">0</setting>
+    <setting id="autorec_maxdiff">15</setting>
+    <setting id="connect_timeout">10</setting>
+    <setting id="dvr_dubdetect" default="true">0</setting>
+    <setting id="dvr_ignore_duplicates">true</setting>
+    <setting id="dvr_lifetime">8</setting>
+    <setting id="dvr_playstatus">true</setting>
+    <setting id="dvr_priority">2</setting>
+    <setting id="epg_async">false</setting>
+    <setting id="host">localhost</setting>
+    <setting id="htsp_port">9982</setting>
+    <setting id="http_port">9981</setting>
+    <setting id="pass">osmc</setting>
+    <setting id="pretuner_closedelay">10</setting>
+    <setting id="pretuner_enabled" default="true">false</setting>
+    <setting id="response_timeout">5</setting>
+    <setting id="stream_readchunksize">64</setting>
+    <setting id="streaming_profile" default="true"></setting>
+    <setting id="total_tuners">2</setting>
+    <setting id="trace_debug" default="true">false</setting>
+    <setting id="user">admin</setting>
+</settings>

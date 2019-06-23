@@ -1,0 +1,6 @@
+- name: restart_tvheadend
+  service: name=tvheadend state=stopped
+  notify: start_tvheadend
+
+- name: start_tvheadend
+  service: name=tvheadend state=started
