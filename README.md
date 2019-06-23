@@ -5,15 +5,15 @@ This ansible playbook is ment to setup a raspberry >pi2 for tv7 (init7). The ide
 ## Todo
 
 * Add a storage for timeshift (pause) functionality, i don't know yet what is a good idea to do so:
- * NFS automounts, i use this and it works fine
- * Plugged in USB disk, not tested
+    * NFS automounts, i use this and it works fine
+    * Plugged in USB disk, not tested
 * Add webradio channels
 
 ## Installation
 
-- Get a PI and a network cable
+1. Get a PI and a network cable
 - Download the "Raspbian Stretch Lite" image and install it according to:
- - https://www.raspberrypi.org/downloads/raspbian/
+    - https://www.raspberrypi.org/downloads/raspbian/
 - Install ansible on your admin computer
 - Download this ansible playbook
 - Give ssh access to the pi from your admin computer
