@@ -131,3 +131,8 @@
     minute: "0"
     hour: "4"
     job: "{{getent_passwd['hts'][4]}}/channels/getepg.sh"
+
+- name: import epg data
+  command: /{{getent_passwd['hts'][4]}}/channels/getepg.sh
+  args:
+    chdir: /{{getent_passwd['hts'][4]}}/channels
