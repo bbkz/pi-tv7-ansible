@@ -7,6 +7,14 @@
     - python3-configobj
     - socat
 
+# get the home of the tvheadend user
+- getent:
+    database: passwd
+    key: hts
+    split: ':'
+- debug:
+    var: getent_passwd
+
 - file:
     path: '{{item}}'
     state: directory
@@ -14,12 +22,12 @@
     group: video
     mode: 0700
   loop:
-    - /var/lib/hts/channels
+    - /{{getent_passwd['hts'][4]}}/channels
 
 - name: add channel script
   copy:
     src: prepare_channels.py
-    dest: /var/lib/hts/channels/prepare_channels.py
+    dest: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.py
     owner: hts
     group: video
     mode: 0700
@@ -27,21 +35,21 @@
 - name: add channel config
   copy:
     src: prepare_channels.conf
-    dest: /var/lib/hts/channels/prepare_channels.conf
+    dest: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.conf
     owner: hts
     group: video
     mode: 0600
 
 - name: create channel playlist
-  command: /var/lib/hts/channels/prepare_channels.py
+  command: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.py
   args:
-    chdir: /var/lib/hts/channels
-    creates: /var/lib/hts/channels/data/tv7playlist.m3u
+    chdir: /{{getent_passwd['hts'][4]}}/channels
+    creates: /{{getent_passwd['hts'][4]}}/channels/data/tv7playlist.m3u
 
 - name: add superuser for tvheadend
   copy:
     src: superuser
-    dest: /var/lib/hts/.hts/tvheadend/superuser
+    dest: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/superuser
     owner: hts
     group: hts
     mode: 0600
@@ -49,7 +57,7 @@
 
 - name: disable startup wizard for tvheadend
   lineinfile:
-    path: /var/lib/hts/.hts/tvheadend/config
+    path: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/config
     regexp: '(?:(?<=\s)|^)\"wizard\"'
     state: absent
   notify: restart_tvheadend
@@ -61,15 +69,15 @@
     group: video
     mode: 0700
   loop:
-    - /var/lib/hts/.hts/tvheadend/input
-    - /var/lib/hts/.hts/tvheadend/input/iptv
-    - /var/lib/hts/.hts/tvheadend/input/iptv/networks
-    - /var/lib/hts/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a
 
 - name: add tv7 input config for tvheadend
-  copy:
-    src: input-config-tv7
-    dest: /var/lib/hts/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a/config
+  template:
+    src: input-config-tv7.j2
+    dest: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a/config
     owner: hts
     group: video
     mode: 0600
@@ -84,17 +92,28 @@
     - tvheadend
 
 - name: enable the bouquet created by tvheadend
-  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 3cfd08f7ff52f92ea3f2f3e63c30e74a /var/lib/hts/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch bouquet-enabled.done
+  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 3cfd08f7ff52f92ea3f2f3e63c30e74a {{getent_passwd['hts'][4]}}/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch bouquet-enabled.done
   args:
-    chdir: /var/lib/hts/channels
+    chdir: /{{getent_passwd['hts'][4]}}/channels
     creates: bouquet-enabled.done
+    warn: false
   notify: restart_tvheadend
 
+
+- file:
+    path: '{{item}}'
+    state: directory
+    owner: hts
+    group: video
+    mode: 0700
+  loop:
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/epggrab
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/epggrab/config
 
 - name: add epg grab config
   copy:
     src: epggrab-config
-    dest: /var/lib/hts/.hts/tvheadend/epggrab/config
+    dest: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/epggrab/config
     owner: hts
     group: video
     mode: 0600
@@ -103,7 +122,7 @@
 - name: add epg script
   copy:
     src: getepg.sh
-    dest: /var/lib/hts/channels/getepg.sh
+    dest: /{{getent_passwd['hts'][4]}}/channels/getepg.sh
     owner: hts
     group: video
     mode: 0700

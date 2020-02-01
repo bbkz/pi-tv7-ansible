@@ -7,6 +7,7 @@ cd $(dirname "$0")
 if [ ! -d data/epg/archive ]; then
   mkdir -p data/epg/archive
 fi
+HTSHOME=$(getent passwd hts | awk -F: '{ print $6 }')
 SOURCES="https://github.com/mathewmeconry/TV7_EPG_Data/raw/master/tv7_epg.xml.gz"
 >data/epg/grab_xmltv.log
 
@@ -25,7 +26,7 @@ if [ ! -z ${SOURCES+x} ]; then
   for SOURCE in $SOURCES; do
     FILENAME=$(echo $SOURCE |cut -d "/" -f4- |sed 's/\//_/g')
     wget $SOURCE -O data/epg/$FILENAME -nv -a data/epg/grab_xmltv.log
-    zcat data/epg/$FILENAME | socat - UNIX-CONNECT:/var/lib/hts/.hts/tvheadend/epggrab/xmltv.sock
+    zcat data/epg/$FILENAME | socat - UNIX-CONNECT:$HTSHOME/.hts/tvheadend/epggrab/xmltv.sock
     echo "" >> data/epg/grab_xmltv.log
   done
 else
