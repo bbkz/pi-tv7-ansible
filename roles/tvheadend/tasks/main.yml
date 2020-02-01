@@ -25,8 +25,8 @@
     - /{{getent_passwd['hts'][4]}}/channels
 
 - name: add channel config
-  copy:
-    src: channels.conf
+  template:
+    src: channels.conf.j2
     dest: /{{getent_passwd['hts'][4]}}/channels/channels.conf
     owner: hts
     group: video
@@ -95,11 +95,21 @@
     - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv
     - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks
     - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a
+    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/71bff464453b0cc80ee90df8f7ccd7d6
 
 - name: add tv7 input config for tvheadend
   template:
     src: input-config-tv7.j2
     dest: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/3cfd08f7ff52f92ea3f2f3e63c30e74a/config
+    owner: hts
+    group: video
+    mode: 0600
+  notify: restart_tvheadend
+
+- name: add webradio input config for tvheadend
+  template:
+    src: input-config-webradio.j2
+    dest: /{{getent_passwd['hts'][4]}}/.hts/tvheadend/input/iptv/networks/71bff464453b0cc80ee90df8f7ccd7d6/config
     owner: hts
     group: video
     mode: 0600
@@ -113,11 +123,19 @@
   loop:
     - tvheadend
 
-- name: enable the bouquet created by tvheadend
-  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 3cfd08f7ff52f92ea3f2f3e63c30e74a {{getent_passwd['hts'][4]}}/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch bouquet-enabled.done
+- name: enable the tv7 bouquet created by tvheadend
+  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 3cfd08f7ff52f92ea3f2f3e63c30e74a {{getent_passwd['hts'][4]}}/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch tv7-bouquet-enabled.done
   args:
     chdir: /{{getent_passwd['hts'][4]}}/channels
-    creates: bouquet-enabled.done
+    creates: tv7-bouquet-enabled.done
+    warn: false
+  notify: restart_tvheadend
+
+- name: enable the webradio bouquet created by tvheadend
+  shell: sed -i 's/"enabled"{{':'}} false/"enabled"{{':'}} true/g' $(grep 71bff464453b0cc80ee90df8f7ccd7d6 {{getent_passwd['hts'][4]}}/.hts/tvheadend/bouquet/* |cut -d "{{':'}}" -f1); touch webradio-bouquet-enabled.done
+  args:
+    chdir: /{{getent_passwd['hts'][4]}}/channels
+    creates: webradio-bouquet-enabled.done
     warn: false
   notify: restart_tvheadend
 
