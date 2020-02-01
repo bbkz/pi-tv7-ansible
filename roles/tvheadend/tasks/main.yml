@@ -99,7 +99,6 @@
     warn: false
   notify: restart_tvheadend
 
-
 - file:
     path: '{{item}}'
     state: directory
@@ -108,7 +107,6 @@
     mode: 0700
   loop:
     - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/epggrab
-    - /{{getent_passwd['hts'][4]}}/.hts/tvheadend/epggrab/config
 
 - name: add epg grab config
   copy:
@@ -126,3 +124,10 @@
     owner: hts
     group: video
     mode: 0700
+
+- name: add cron job to update the epg
+  cron:
+    name: "epg update"
+    minute: "0"
+    hour: "4"
+    job: "{{getent_passwd['hts'][4]}}/channels/getepg.sh"
