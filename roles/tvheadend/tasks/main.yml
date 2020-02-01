@@ -24,27 +24,49 @@
   loop:
     - /{{getent_passwd['hts'][4]}}/channels
 
-- name: add channel script
-  copy:
-    src: prepare_channels.py
-    dest: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.py
-    owner: hts
-    group: video
-    mode: 0700
-
 - name: add channel config
   copy:
-    src: prepare_channels.conf
-    dest: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.conf
+    src: channels.conf
+    dest: /{{getent_passwd['hts'][4]}}/channels/channels.conf
     owner: hts
     group: video
     mode: 0600
 
-- name: create channel playlist
-  command: /{{getent_passwd['hts'][4]}}/channels/prepare_channels.py
+- name: add tv7 channel script
+  copy:
+    src: tv7-channels.py
+    dest: /{{getent_passwd['hts'][4]}}/channels/tv7-channels.py
+    owner: hts
+    group: video
+    mode: 0700
+
+- name: create tv7 channel playlist
+  command: /{{getent_passwd['hts'][4]}}/channels/tv7-channels.py
   args:
     chdir: /{{getent_passwd['hts'][4]}}/channels
     creates: /{{getent_passwd['hts'][4]}}/channels/data/tv7playlist.m3u
+
+- name: add radio channel script
+  copy:
+    src: webradio-channels.py
+    dest: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.py
+    owner: hts
+    group: video
+    mode: 0700
+
+- name: add radio channel list
+  copy:
+    src: webradio-channels.csv
+    dest: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.csv
+    owner: hts
+    group: video
+    mode: 0600
+
+- name: create webradio channel playlist
+  command: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.py
+  args:
+    chdir: /{{getent_passwd['hts'][4]}}/channels
+    creates: /{{getent_passwd['hts'][4]}}/channels/data/webradio-playlist.m3u
 
 - name: add superuser for tvheadend
   copy:

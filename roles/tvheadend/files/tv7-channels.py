@@ -6,10 +6,7 @@ import os
 import urllib
 #from urllib.request import urlopen
 import urllib.request
-import json
-import base64
 from lxml import etree as ET
-import csv
 import argparse
 from configobj import ConfigObj
 import logging
@@ -17,7 +14,7 @@ import re
 
 ## Set up the command-line options (parameters)
 parser = argparse.ArgumentParser(description='prepare and update channels')
-parser.add_argument("-c", "--config", help="Use custom config file location. (instead of prepare_channels.conf)", default='prepare_channels.conf', dest="config_file", metavar="CONFIG_FILE")
+parser.add_argument("-c", "--config", help="Use custom config file location. (instead of channels.conf)", default='channels.conf', dest="config_file", metavar="CONFIG_FILE")
 parser.add_argument("-d", "--debug", help="show debug informations", default=False, action="store_true", dest="show_debug")
 
 ## Parse the parameters from command-line (options)
@@ -33,12 +30,10 @@ else:
 # loading config file
 try:
     config = ConfigObj(options.config_file)
-    url_data = config['url_data']
-    url_playlist = config['url_playlist']
-    logo_path = config['logo_path']
-    playlist_path = config['playlist_path']
+    url_playlist = config['tv7_url']
+    playlist_path = config['tv7_playlist']
 except Exception as e:
-    logging.error("[-] prepare_channels.py: -> there was a error loading the config file")
+    logging.error("[-] tv7-channels.py: -> there was a error loading the config file")
     logging.error('[-] ', exc_info=1)
     sys.exit(1)
 
@@ -46,7 +41,7 @@ except Exception as e:
 try:
     os.makedirs(os.path.dirname(playlist_path), exist_ok=True)
 except Exception as e:
-    logging.error("[-] prepare_channels.py: os.mkdir() -> could create playlist folder")
+    logging.error("[-] tv7-channels.py: os.mkdir() -> could create playlist folder")
     logging.error('[-] ', exc_info=1)
     sys.exit(1)
 

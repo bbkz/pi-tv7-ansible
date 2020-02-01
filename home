@@ -1,0 +1,2 @@
+[tvheadends]
+starlight.home ansible_become=true ansible_become_method=su
