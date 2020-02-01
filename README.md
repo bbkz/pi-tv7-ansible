@@ -52,7 +52,7 @@ Edit/Add the following file/folder containing your ssh public key:
 ansible-playbook -i production site.yml
 ```
 
-or if you use su and like to be used for the root password you can use:
+or if you use su and like to be used for the root password you can use, for this to work you have to add ```ansible_become_method=su``` to your inventory file ('production'):
 
 ```
 ansible-playbook -K -i production site.yml
@@ -75,6 +75,14 @@ tvheadend will make the connection to the init7 stream and provide it in your ne
 In this case here we just install and configure it alongside of kodi.
 
 The webinterface runs on http://your_pi:9981, the username and password is "admin".
+
+#### Recording and Timeshift
+
+When not configured otherwise in the tvheadend webinterface your recording and timeshift path will be the home folder of the hts user (which the installation package tvheadend creates) will be used.
+
+The configuration is found on:
+
+* http://your_pi:9981 -> Configuration -> Recording
 
 ### scripts
 
