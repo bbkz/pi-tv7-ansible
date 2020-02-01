@@ -52,6 +52,12 @@ Edit/Add the following file/folder containing your ssh public key:
 ansible-playbook -i production site.yml
 ```
 
+or if you use su and like to be used for the root password you can use:
+
+```
+ansible-playbook -K -i production site.yml
+```
+
 ## Components
 
 ### kodi
