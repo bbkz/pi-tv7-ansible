@@ -11,7 +11,7 @@
     <setting id="host">localhost</setting>
     <setting id="htsp_port">9982</setting>
     <setting id="http_port">9981</setting>
-    <setting id="pass">osmc</setting>
+    <setting id="pass">admin</setting>
     <setting id="pretuner_closedelay">10</setting>
     <setting id="pretuner_enabled" default="true">false</setting>
     <setting id="response_timeout">5</setting>
