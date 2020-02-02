@@ -20,7 +20,7 @@
     state: directory
     owner: hts
     group: video
-    mode: 0700
+    mode: 0755
   loop:
     - /{{getent_passwd['hts'][4]}}/channels
 
@@ -30,7 +30,7 @@
     dest: /{{getent_passwd['hts'][4]}}/channels/channels.conf
     owner: hts
     group: video
-    mode: 0600
+    mode: 0644
 
 - name: add tv7 channel script
   copy:
@@ -38,7 +38,7 @@
     dest: /{{getent_passwd['hts'][4]}}/channels/tv7-channels.py
     owner: hts
     group: video
-    mode: 0700
+    mode: 0755
 
 - name: create tv7 channel playlist
   command: /{{getent_passwd['hts'][4]}}/channels/tv7-channels.py
@@ -52,7 +52,7 @@
     dest: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.py
     owner: hts
     group: video
-    mode: 0700
+    mode: 0755
 
 - name: add radio channel list
   copy:
@@ -60,7 +60,7 @@
     dest: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.csv
     owner: hts
     group: video
-    mode: 0600
+    mode: 0644
 
 - name: create webradio channel playlist
   command: /{{getent_passwd['hts'][4]}}/channels/webradio-channels.py
@@ -163,7 +163,7 @@
     dest: /{{getent_passwd['hts'][4]}}/channels/getepg.sh
     owner: hts
     group: video
-    mode: 0700
+    mode: 0755
 
 - name: add cron job to update the epg
   cron:
